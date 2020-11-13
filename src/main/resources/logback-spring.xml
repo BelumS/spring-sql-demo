@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="serviceName" source="spring.application.name"/>
+
+    <property resource="application.yml"/>
+    <property resource="misc/log-masking.properties"/>
+
+    <property name="maxFileSize" value="${logback.maxFileSize:-25MB}"/>
+    <property name="maxHistory" value="${logback.maxHistory:-3}"/>
+    <property name="totalSizeCap" value="${logback.totalSizeCap:-300MB}"/>
+    <property name="logLevel" value="${logback.logLevel:-INFO}"/>
+    <property name="appender" value="${logback.appender:-Async-Appender}"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilePath}/api-template.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logFilePath}/api-template-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_COLOR" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{ISO8601}|${serviceName:-SERVICE}|%highlight(%p)|[%thread]|%logger{36} - %highlight(%m%n)
+            </pattern>
+        </encoder>
+    </appender>
+
+<!--    <appender name="STDOUT_MASK" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.belum.apitemplate.utils.PatternMaskingLayout">
+                <maskPattern>${FIRST_NAME_JSON}</maskPattern>
+                <maskPattern>${MIDDLE_NAME_JSON}</maskPattern>
+                <maskPattern>${LAST_NAME_JSON}</maskPattern>
+                <maskPattern>${PHONE_JSON}</maskPattern>
+                <maskPattern>${EMAIL_JSON}</maskPattern>
+                <maskPattern>${PASSWORD_JSON}</maskPattern>
+                <maskPattern>${ADDRESS_LINE1_JSON}</maskPattern>
+                <maskPattern>${ADDRESS_LINE2_JSON}</maskPattern>
+                <maskPattern>${CITY_JSON}</maskPattern>
+                <maskPattern>${STATE_JSON}</maskPattern>
+                <pattern>%d{ISO8601}|${serviceName:-SERVICE}|%highlight(%p)|[%thread]|%logger{36} - %highlight(%msg%n)
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>-->
+
+    <appender name="Async_Appender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>1000</maxFlushTime>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <root level="${logLevel}">
+        <appender-ref ref="${appender}"/>
+    </root>
+</configuration>

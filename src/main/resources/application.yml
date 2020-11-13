@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: spring-sql-demo
+    description: A demo project for a RESTful Service connected to a SQL DB.
+    version: "@application.version@"
+    timestamp: "@application.buildTimestamp@"
+    branch: "@application.branch@"
+    environment: ${ENV}
+  profiles.active: default
+
+api:
+  basePath: "api/"
+  version:
+    v1: "v1"
+    v2: "v2"
+
+server:
+  port: 8080
+  servlet:
+    contextPath: "/${spring.application.name}"
+
+logback:
+  appender: STDOUT_COLOR
+  level: DEBUG

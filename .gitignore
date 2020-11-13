@@ -1,0 +1,42 @@
+### Misc ###
+HELP.md
+build/
+!**/src/main/**
+!**/src/test/**
+*.class
+*.DS_Store
+*.fpr
+tmp/
+
+### Gradle ###
+.gradle/
+gradle/
+/target/
+gradlew
+gradlew.bat
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
