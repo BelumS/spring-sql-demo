@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class ExampleExceptionHandlerTest {
-    private ExampleExceptionHandler handler;
+class RestExceptionHandlerTest {
+    private RestExceptionHandler handler;
 
     @BeforeEach
     void setup() {
-        handler = new ExampleExceptionHandler();
+        handler = new RestExceptionHandler();
     }
 
     @Test

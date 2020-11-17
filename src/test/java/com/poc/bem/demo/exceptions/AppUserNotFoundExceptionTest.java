@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class ExampleNotFoundExceptionTest {
-    private ExampleNotFoundException exception;
+class AppUserNotFoundExceptionTest {
+    private AppUserNotFoundException exception;
 
     @BeforeEach
     void setup() {
-        exception = new ExampleNotFoundException();
+        exception = new AppUserNotFoundException();
     }
 
     @Test
@@ -20,19 +20,19 @@ class ExampleNotFoundExceptionTest {
 
     @Test
     void testMessage() {
-        exception = new ExampleNotFoundException("Message");
+        exception = new AppUserNotFoundException("Message");
         assertNotNull(exception);
     }
 
     @Test
     void testCause() {
-        exception = new ExampleNotFoundException(new IllegalArgumentException());
+        exception = new AppUserNotFoundException(new IllegalArgumentException());
         assertNotNull(exception);
     }
 
     @Test
     void testAlt() {
-        exception = new ExampleNotFoundException("Message", new IllegalArgumentException());
+        exception = new AppUserNotFoundException("Message", new IllegalArgumentException());
         assertNotNull(exception);
     }
 }

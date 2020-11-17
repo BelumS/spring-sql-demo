@@ -1,6 +1,6 @@
 package com.poc.bem.demo.controllers;
 
-import com.poc.bem.demo.domain.Example;
+import com.poc.bem.demo.domain.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -12,16 +12,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class ExampleControllerTest {
-    private ExampleController controller;
-    private ResponseEntity<Example> responseEntity;
+class AppUserControllerTest {
+    private AppUserController controller;
+    private ResponseEntity<AppUser> responseEntity;
 
     @BeforeEach
     void setup() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-        controller = new ExampleController();
-        responseEntity = controller.getResource();
+        controller = new AppUserController();
+        responseEntity = controller.getUser("0");
     }
 
     @Test
@@ -36,6 +36,6 @@ class ExampleControllerTest {
 
     @Test
     void testGetResourcesRequestBody() {
-        assertThat(responseEntity.getBody()).isInstanceOf(Example.class);
+        assertThat(responseEntity.getBody()).isInstanceOf(AppUser.class);
     }
 }

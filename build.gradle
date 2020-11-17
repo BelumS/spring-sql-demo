@@ -40,8 +40,11 @@ idea {
 
 group = 'com.poc.bem'
 version = '0.0.1-SNAPSHOT'
+
 sourceCompatibility = 11
 targetCompatibility = 11
+
+String branch = System.getProperty("sourceBranch")
 
 configurations {
     developmentOnly
@@ -133,6 +136,14 @@ dependencies {
     //testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
 }
 
+processResources {
+    filter ReplaceTokens, tokens: [
+            "application.version": version.toString(),
+            "application.buildTimestamp": getDate(),
+            "application.branch": branch.toString(),
+    ]
+}
+
 test {
     useJUnitPlatform()
 
@@ -157,7 +168,8 @@ jacocoTestReport {
 }
 
 dependencyCheck {
-	format = 'ALL' }
+	format = 'ALL'
+}
 
 sonarqube {
     properties {
