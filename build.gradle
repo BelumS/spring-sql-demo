@@ -127,13 +127,18 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    //testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-engine'
+    }
 
-    // Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
-    //testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
-    //testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    //testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+
+    // Additional dependencies to run Junit5 Tests in Intellij IDE
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
+    testRuntimeOnly 'org.junit.platform:junit-platform-engine:1.6.0'
 }
 
 processResources {

@@ -1,21 +1,21 @@
 package com.poc.bem.demo.domain;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.poc.bem.demo.constants.TestConstants.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(JUnit4.class)
-public class HeartBeatTest {
+@ExtendWith(SpringExtension.class)
+class HeartBeatTest {
     private HeartBeat heartBeat;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         heartBeat = new HeartBeat();
         ReflectionTestUtils.setField(heartBeat, "applicationName", NAME);
         ReflectionTestUtils.setField(heartBeat, "applicationVersion", VERSION);
@@ -25,32 +25,32 @@ public class HeartBeatTest {
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         assertNotNull(heartBeat);
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals(NAME, heartBeat.getApplicationName());
     }
 
     @Test
-    public void testGetVersion() {
+    void testGetVersion() {
         assertEquals(VERSION, heartBeat.getApplicationVersion());
     }
 
     @Test
-    public void testGetBuildTimestamp() {
+    void testGetBuildTimestamp() {
         assertNotNull(heartBeat.getApplicationTimestamp());
     }
 
     @Test
-    public void testGetEnv() {
+    void testGetEnv() {
         assertEquals(ENV, heartBeat.getApplicationEnvironment());
     }
 
     @Test
-    public void testGetBranch() {
+    void testGetBranch() {
         assertEquals(BRANCH, heartBeat.getApplicationBranch());
     }
 }

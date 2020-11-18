@@ -8,7 +8,7 @@
     <property name="maxFileSize" value="${logback.maxFileSize:-25MB}"/>
     <property name="maxHistory" value="${logback.maxHistory:-3}"/>
     <property name="totalSizeCap" value="${logback.totalSizeCap:-300MB}"/>
-    <property name="logLevel" value="${logback.logLevel:-INFO}"/>
+    <property name="logLevel" value="${logback.logLevel:-DEBUG}"/>
     <property name="appender" value="${logback.appender:-Async-Appender}"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
