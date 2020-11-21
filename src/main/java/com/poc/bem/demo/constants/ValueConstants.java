@@ -1,6 +1,6 @@
 package com.poc.bem.demo.constants;
 
-public final class ValueConstants extends ApiConstants {
+public final class ValueConstants {
     private ValueConstants(){}
 
     public static final String VALUE_Y ="Y";

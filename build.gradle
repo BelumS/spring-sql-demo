@@ -1,6 +1,4 @@
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
@@ -127,20 +125,25 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    //testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-engine'
+    }
 
-    // Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
-    //testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
-    //testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    //testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+
+    // Additional dependencies to run Junit5 Tests in Intellij IDE
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
+    testRuntimeOnly 'org.junit.platform:junit-platform-engine:1.6.0'
 }
 
 processResources {
     filter ReplaceTokens, tokens: [
-            "application.version": version.toString(),
+            "application.version"       : version.toString(),
             "application.buildTimestamp": getDate(),
-            "application.branch": branch.toString(),
+            "application.branch"        : branch.toString(),
     ]
 }
 
@@ -161,14 +164,15 @@ jacocoTestReport {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "$rootPack/aop/*",
-                    "$rootPack/constants/*"
+                    "$rootPack/constants/*",
+                    "$rootPack/utils/PatternMaskingLayout.class"
             ])
         })
     }
 }
 
 dependencyCheck {
-	format = 'ALL'
+    format = 'ALL'
 }
 
 sonarqube {
@@ -184,10 +188,11 @@ sonarqube {
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.verbose', true
         property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.sources', "src"
+        property 'sonar.exclusions', "**/test/**, **/lib/**, **/resources/**"
         property 'sonar.dependencyCheck.skip', true
         property 'sonar.dependencyCheck.xmlReportPath', 'build/reports/dependency-check-report.xml'
         property 'sonar.dependencyCheck.htmlReportPath', 'build/reports/dependency-check-report.html'
-        properties["sonar.sources"] += "build.gradle"
     }
 }
 
@@ -195,5 +200,5 @@ tasks['sonarqube'].dependsOn(test)
 tasks['test'].finalizedBy(jacocoTestReport)
 
 static String getDate() {
-    return ZonedDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+    return ZonedDateTime.now().format("MM-dd-yyyy HH:mm:ss")
 }
