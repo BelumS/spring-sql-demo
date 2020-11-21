@@ -116,7 +116,11 @@ public class AppUserBuilder {
      * Build an AppUser object based on another AppUser's properties.
      * @return an AppUser object
      */
-    public AppUser build(AppUser user) {
+    public AppUser build(@NonNull AppUser user) {
         return user;
+    }
+
+    public AppUser build(@NonNull AppUserDTO user) {
+        return new AppUser(user);
     }
 }

@@ -23,6 +23,6 @@ class RestExceptionHandlerTest {
 
     @Test
     void testCatchAllException() {
-        assertNotNull(handler.handleCatchAllException(new Exception()));
+        assertNotNull(handler.handleCatchAllException(new Exception("An Exception occurred!")));
     }
 }

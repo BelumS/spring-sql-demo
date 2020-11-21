@@ -1,5 +1,6 @@
 package com.poc.bem.demo.bootstrap;
 
+import com.poc.bem.demo.constants.ApiConstants;
 import com.poc.bem.demo.domain.AppUser;
 import com.poc.bem.demo.services.AppUserDAOService;
 import lombok.RequiredArgsConstructor;
@@ -28,18 +29,18 @@ public class SeedData implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     protected void generateAppUsers() {
-        int num = 6;
+        int num = 5;
         log.debug("Generating {} users.", num);
         service.createList(
-                IntStream.rangeClosed(0, num)
+                IntStream.rangeClosed(1, num)
                         .mapToObj(e -> new AppUser().builder()
-                                .createProgramId(env.getRequiredProperty("spring.application.name"))
+                                .createProgramId(env.getRequiredProperty(ApiConstants.APP_NAME))
                                 .createTimestamp(Timestamp.from(Instant.now()))
                                 .firstName("TEST")
                                 .lastName("USER" + e)
                                 .email("test" + e + "@email.com")
                                 .phone("123-456-789" + e)
-                                .ipAddress("111.111.11.1" + e)
+                                .ipAddress("111.111.1." + e)
                                 .build())
                         .collect(Collectors.toList())
         );

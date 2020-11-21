@@ -1,9 +1,8 @@
 package com.poc.bem.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
@@ -14,10 +13,8 @@ import java.sql.Timestamp;
         @Index(name = "IDX_EMAIL", columnList = "email"),
         @Index(name = "IDX_PHONE", columnList = "phone")
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 public class AppUser {
 
@@ -62,7 +59,7 @@ public class AppUser {
     @Version
     private Integer version;
 
-    public AppUser(AppUserBuilder builder) {
+    public AppUser(@NonNull AppUserBuilder builder) {
         this.id = builder.getId();
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
@@ -78,7 +75,23 @@ public class AppUser {
         this.version = builder.getVersion();
     }
 
-    public AppUser(AppUser user) {
+    public AppUser(@NonNull AppUser user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.phone = user.getPhone();
+        this.ipAddress = user.getIpAddress();
+        this.createProgramId = user.getCreateProgramId();
+        this.modifyProgramId = user.getModifyProgramId();
+        this.createTimestamp = user.getCreateTimestamp();
+        this.modifyTimestamp = user.getModifyTimestamp();
+        this.createUserId = user.getCreateUserId();
+        this.modifyUserId = user.getModifyUserId();
+        this.version = user.getVersion();
+    }
+
+    public AppUser(@NonNull AppUserDTO user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -99,24 +112,21 @@ public class AppUser {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
     public String toString() {
         return "{"
+                + "\"id\": \"" + id + "\","
                 + "\"firstName\": \"" + firstName + "\","
                 + "\"lastName\": \"" + lastName + "\","
                 + "\"email\": \"" + email + "\","
                 + "\"phone\": \"" + phone + "\","
                 + "\"ipAddress\": \"" + ipAddress + "\","
-                + "\"modifyTs\": \"" + modifyTimestamp + "\""
+                + "\"createProgramId\": \"" + createProgramId + "\","
+                + "\"modifyProgramId\": \"" + modifyProgramId + "\","
+                + "\"createTimestamp\": \"" + createTimestamp + "\","
+                + "\"modifyTimestamp\": \"" + modifyTimestamp + "\","
+                + "\"createUserId\": \"" + createUserId + "\","
+                + "\"modifyUserId\": \"" + modifyUserId + "\","
+                + "\"version\": \"" + version + "\""
                 + "}";
     }
 }

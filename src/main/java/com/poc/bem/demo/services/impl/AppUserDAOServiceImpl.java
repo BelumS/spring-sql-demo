@@ -1,5 +1,6 @@
 package com.poc.bem.demo.services.impl;
 
+import com.poc.bem.demo.constants.ApiConstants;
 import com.poc.bem.demo.domain.AppUser;
 import com.poc.bem.demo.exceptions.AppUserNotFoundException;
 import com.poc.bem.demo.repositories.AppUserRepository;
@@ -57,12 +58,16 @@ public class AppUserDAOServiceImpl implements AppUserDAOService {
     public AppUser create(AppUser user) {
         try {
             AppUser realUser = Objects.requireNonNull(user);
-            realUser.builder()
+            AppUser saved = repository.save(realUser.builder()
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .phone(user.getPhone())
+                    .email(user.getEmail())
+                    .ipAddress(user.getIpAddress())
                     .createTimestamp(Timestamp.from(Instant.now()))
-                    .createProgramId(env.getRequiredProperty("spring.application.name"))
-                    .build();
-
-            AppUser saved = repository.save(realUser);
+                    .createProgramId(env.getRequiredProperty(ApiConstants.APP_NAME))
+                    .createUserId(env.getRequiredProperty(ApiConstants.APP_NAME))
+                    .build());
             log.debug("Inserted user with ID: {}", saved.getId());
             return saved;
         } catch (DataAccessException e) {
@@ -94,18 +99,24 @@ public class AppUserDAOServiceImpl implements AppUserDAOService {
     public AppUser update(AppUser user) {
         try {
             AppUser realUser = Objects.requireNonNull(user);
-            AppUser updated = verifyBy(realUser.getId()).builder()
-                    .firstName(realUser.getFirstName())
-                    .lastName(realUser.getLastName())
-                    .email(realUser.getEmail())
-                    .phone(realUser.getPhone())
-                    .ipAddress(realUser.getIpAddress())
+            AppUser found = verifyBy(realUser.getId());
+            AppUser updated = found.builder()
+                    .id(user.getId())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .phone(user.getPhone())
+                    .ipAddress(user.getIpAddress())
+                    .createProgramId(found.getCreateProgramId())
+                    .createUserId(found.getCreateUserId())
+                    .createTimestamp(found.getCreateTimestamp())
                     .modifyTimestamp(Timestamp.from(Instant.now()))
-                    .modifyProgramId(env.getRequiredProperty("spring.application.name"))
+                    .modifyProgramId(env.getRequiredProperty(ApiConstants.APP_NAME))
+                    .modifyUserId(env.getRequiredProperty(ApiConstants.APP_NAME))
                     .build();
 
             log.debug("Updated user with ID: {}", updated.getId());
-            return updated;
+            return repository.save(updated);
         } catch (DataAccessException e) {
             log.error("A DataAccessException occurred: ", e);
             throw e;
@@ -129,7 +140,7 @@ public class AppUserDAOServiceImpl implements AppUserDAOService {
         }
     }
 
-    private AppUser verifyBy(int id) {
+    private AppUser verifyBy(int id) throws AppUserNotFoundException, IllegalArgumentException {
         assert id > Integer.MIN_VALUE;
         if (id > 0 && id < Integer.MAX_VALUE) {
             var user = repository.findById(id).orElseThrow(AppUserNotFoundException::new);

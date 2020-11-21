@@ -10,8 +10,8 @@ import java.time.Instant;
 @Getter
 @ToString
 public final class ApiRequest {
-    private String code;
-    private String message;
+    private final String code;
+    private final String message;
     private final long timeStamp;
 
     public ApiRequest(String code, String message) {

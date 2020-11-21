@@ -1,8 +1,8 @@
 package com.poc.bem.demo.controllers.advice;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -11,7 +11,7 @@ import lombok.ToString;
 @JsonPropertyOrder({"request", "response"})
 @Getter
 @ToString
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class ApiResponse {
     private final ApiRequest request;
     private final Object payload;
