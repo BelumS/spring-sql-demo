@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "APP_USER", indexes = {
-        @Index(name = "IDX_EMAIL", columnList = "email"),
-        @Index(name = "IDX_PHONE", columnList = "phone")
+        @Index(name = "IDX_EMAIL", columnList = "email", unique = true),
+        @Index(name = "IDX_PHONE", columnList = "phone", unique = true)
 })
 @Getter
 @NoArgsConstructor
