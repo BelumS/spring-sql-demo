@@ -63,9 +63,9 @@ bootRun {
     String environment = System.getenv('ENV')
     String logbackAppender = System.getenv('LOGBACK_APPENDER')
     String keyStorePw = System.getenv('KEYSTORE_PW')
-    def appConfig = System.getProperty('app.config', "/tmp/config")
+    def appConfig = System.getProperty('app.config', "$projectDir/tmp/config")
 
-    def logsDir = System.getProperty('logFilePath', "/tmp/logs")
+    def logsDir = System.getProperty('logFilePath', "$projectDir/tmp/logs")
     File logsFolder = new File(logsDir)
     if (!logsFolder.exists()) {
         logsFolder.mkdirs()
@@ -84,7 +84,10 @@ bootRun {
             "-Dapp.config=$appConfig",
             "-Dserver.port=$serverPort",
             "-Dlogback.appender=$logbackAppender",
-            "-Dwebapp.baseUrl=http://localhost:$serverPort/",
+            "-Dhttp.proxyHost=http://localhost/",
+            "-Dhttps.proxyHost=http://localhost/",
+            "-Dhttp.proxyPort=8080",
+            "-Dhttps.proxyPort=8080",
             "-Djavax.net.ssl.trustStore=$projectDir/security/api_truststore.jks",
             "-Djavax.net.ssl.keyStore=$projectDir/security/api_keystore.jks",
             "-Djavax.net.ssl.trustStorePassword=$keyStorePw",

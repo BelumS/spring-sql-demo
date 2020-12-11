@@ -12,22 +12,22 @@
     <property name="appender" value="${logback.appender:-Async-Appender}"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logFilePath}/api-template.log</file>
+        <file>${logFilePath}/spring-sql-demo.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>${logFilePath}/api-template-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>${maxFileSize}</maxFileSize>
-            <maxHistory>${maxHistory}</maxHistory>
-            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <fileNamePattern>${logFilePath}/spring-sql-demo-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>25MB</maxFileSize>
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>300MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
+            <pattern>%d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
+            <pattern>%d{ISO8601}|${serviceName:-SERVICE}|[%thread]|%-5level|%logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
