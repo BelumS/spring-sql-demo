@@ -1,5 +1,6 @@
-import java.time.ZonedDateTime
 import org.apache.tools.ant.filters.ReplaceTokens
+
+import java.time.ZonedDateTime
 
 buildscript {
     ext {
@@ -10,11 +11,42 @@ buildscript {
         junitVersion = '5.6.0'
         lombokVersion = '1.18.14'
     }
+    tasks.withType(JavaCompile) {
+        options.encoding("UTF-8")
+    }
+
+    repositories {
+        maven {
+            url "${artifactory_url}/gradle-release"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/gradle-release-local"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/libs-release-local"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+        jcenter()
+    }
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
         classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0")
         classpath("org.owasp:dependency-check-gradle:6.0.3")
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.7.2")
     }
 }
 
@@ -29,6 +61,8 @@ plugins {
     id 'com.palantir.docker-compose' version '0.22.1'
 }
 
+apply plugin: 'com.jfrog.artifactory'
+
 idea {
     module {
         downloadJavadoc = true
@@ -42,7 +76,17 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+String majorVersion = "$artifactMajorVersion"
+String buildNumber = "$artifactBuildNumber"
+majorVersion = System.getProperty("artifactMajorVersion", majorVersion)
+buildNumber = System.getProperty("artifactBuildNumber", buildNumber)
 String branch = System.getProperty("sourceBranch")
+
+if (System.getProperty("isRelease", "N").equalsIgnoreCase("N")) {
+    version = "$majorVersion" + "-SNAPSHOT"
+} else {
+    version = "$majorVersion"."$buildNumber"
+}
 
 configurations {
     developmentOnly
@@ -52,10 +96,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 bootRun {
@@ -198,6 +238,37 @@ sonarqube {
         property 'sonar.dependencyCheck.htmlReportPath', 'build/reports/dependency-check-report.html'
     }
 }
+
+task incrementVersion {
+    try {
+        if (System.getProperty("isRelease", "N").equalsIgnoreCase("Y")) {
+            Properties props = new Properties()
+            File file = new File("gradle.properties")
+            props.load(file.newDataInputStream())
+            Integer nextBuildNum = (((props.getProperty('artifactBuildNumber')) as BigDecimal) + 1)
+            props.setProperty('artifactBuildNumber', nextBuildNum.toString())
+            props.store(file.newWriter(), null)
+            props.load(file.newDataInputStream())
+        }
+    } catch (Exception e) {
+        println "Error occurred while incrementing the version ${e.getMessage()}"
+    }
+}
+
+/*
+task uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: "${artifactory_url}/libs-snapshot-local") {
+                authentication(userName: artifactory_user, password: artifactory_password)
+            }
+            repository(url: "${artifactory_url}/libs-release-local") {
+                authentication(userName: artifactory_user, password: artifactory_password)
+            }
+        }
+    }
+}
+*/
 
 tasks['sonarqube'].dependsOn(test)
 tasks['test'].finalizedBy(jacocoTestReport)
