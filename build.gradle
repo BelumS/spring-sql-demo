@@ -16,6 +16,8 @@ buildscript {
     }
 
     repositories {
+        mavenLocal()
+
         maven {
             url "${artifactory_url}/gradle-release"
             credentials {
@@ -39,7 +41,9 @@ buildscript {
                 password = "${artifactory_password}"
             }
         }
-        jcenter()
+
+        jcenter{url "http://jcenter.bintray.com"}
+        maven{ url "http://repo.spring.io/milestone"}
     }
 
     dependencies {
@@ -62,6 +66,9 @@ plugins {
 }
 
 apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'war'
 
 idea {
     module {
@@ -96,6 +103,37 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+repositories {
+    mavenLocal()
+
+    maven {
+        url "${artifactory_url}/gradle-release"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    maven {
+        url "${artifactory_url}/gradle-release-local"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    maven {
+        url "${artifactory_url}/libs-release-local"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    jcenter{url "http://jcenter.bintray.com"}
+    maven{ url "http://repo.spring.io/milestone"}
 }
 
 bootRun {
@@ -255,8 +293,7 @@ task incrementVersion {
     }
 }
 
-/*
-task uploadArchives {
+/*task uploadArchives {
     repositories {
         mavenDeployer {
             snapshotRepository(url: "${artifactory_url}/libs-snapshot-local") {
@@ -267,8 +304,7 @@ task uploadArchives {
             }
         }
     }
-}
-*/
+}*/
 
 tasks['sonarqube'].dependsOn(test)
 tasks['test'].finalizedBy(jacocoTestReport)
