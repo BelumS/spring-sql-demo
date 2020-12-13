@@ -1,6 +1,6 @@
 FROM openjdk:11
 MAINTAINER 'Bel Sahn'
-EXPOSE 8082
+EXPOSE 8081
 
 ARG HOME=/app
 
