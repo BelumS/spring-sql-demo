@@ -1,7 +1,7 @@
 spring:
   application:
-    name: spring-sql-demo
-    description: A demo project for a RESTful Service connected to a SQL DB.
+    name: spring-sql-gradle-producer
+    description: A proof-of-concept Spring Data REST & JPA project
     version: "@application.version@"
     timestamp: "@application.buildTimestamp@"
     branch: "@application.branch@"
@@ -32,5 +32,5 @@ server:
     contextPath: "/${spring.application.name}"
 
 logback:
-  appender: STDOUT_COLOR
+  #appender: STDOUT_COLOR
   level: DEBUG

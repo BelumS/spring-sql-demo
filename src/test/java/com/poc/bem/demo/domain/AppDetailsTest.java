@@ -1,55 +1,55 @@
 package com.poc.bem.demo.domain;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.poc.bem.demo.constants.TestConstants.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(JUnit4.class)
-public class AppDetailsTest {
+@ExtendWith(SpringExtension.class)
+class AppDetailsTest {
     private AppDetails details;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         details = new AppDetails(NAME, VERSION, BUILD_TIMESTAMP, ENV, BRANCH);
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         assertNotNull(details);
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals(NAME, details.getName());
     }
 
     @Test
-    public void testGetVersion() {
+    void testGetVersion() {
         assertEquals(VERSION, details.getVersion());
     }
 
     @Test
-    public void testGetBuildTimestamp() {
+    void testGetBuildTimestamp() {
         assertNotNull(details.getBuildTimestamp());
     }
 
     @Test
-    public void testGetEnv() {
+    void testGetEnv() {
         assertEquals(ENV, details.getEnv());
     }
 
     @Test
-    public void testGetBranch() {
+    void testGetBranch() {
         assertEquals(BRANCH, details.getBranch());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertNotNull(details.toString());
     }
 }

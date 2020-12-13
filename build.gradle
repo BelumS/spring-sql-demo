@@ -1,7 +1,6 @@
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import org.apache.tools.ant.filters.ReplaceTokens
+
+import java.time.ZonedDateTime
 
 buildscript {
     ext {
@@ -12,11 +11,46 @@ buildscript {
         junitVersion = '5.6.0'
         lombokVersion = '1.18.14'
     }
+    tasks.withType(JavaCompile) {
+        options.encoding("UTF-8")
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven {
+            url "${artifactory_url}/gradle-release"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/gradle-release-local"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/libs-release-local"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        jcenter{url "http://jcenter.bintray.com"}
+        maven{ url "http://repo.spring.io/milestone"}
+    }
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
         classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0")
         classpath("org.owasp:dependency-check-gradle:6.0.3")
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.7.2")
     }
 }
 
@@ -25,11 +59,16 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
     id 'idea'
+    id 'maven'
     id 'jacoco'
     id 'org.sonarqube' version '3.0'
     id 'org.owasp.dependencycheck' version '6.0.3'
     id 'com.palantir.docker-compose' version '0.22.1'
 }
+
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+apply plugin: 'war'
 
 idea {
     module {
@@ -44,7 +83,17 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+String majorVersion = "$artifactMajorVersion"
+String buildNumber = "$artifactBuildNumber"
+majorVersion = System.getProperty("artifactMajorVersion", majorVersion)
+buildNumber = System.getProperty("artifactBuildNumber", buildNumber)
 String branch = System.getProperty("sourceBranch")
+
+if (System.getProperty("isRelease", "N").equalsIgnoreCase("N")) {
+    version = "$majorVersion" + "-SNAPSHOT"
+} else {
+    version = "$majorVersion"."$buildNumber"
+}
 
 configurations {
     developmentOnly
@@ -57,7 +106,34 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
+    mavenLocal()
+
+    maven {
+        url "${artifactory_url}/gradle-release"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    maven {
+        url "${artifactory_url}/gradle-release-local"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    maven {
+        url "${artifactory_url}/libs-release-local"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    jcenter{url "http://jcenter.bintray.com"}
+    maven{ url "http://repo.spring.io/milestone"}
 }
 
 bootRun {
@@ -65,9 +141,9 @@ bootRun {
     String environment = System.getenv('ENV')
     String logbackAppender = System.getenv('LOGBACK_APPENDER')
     String keyStorePw = System.getenv('KEYSTORE_PW')
-    def appConfig = System.getProperty('app.config', "/tmp/config")
+    def appConfig = System.getProperty('app.config', "$projectDir/tmp/config")
 
-    def logsDir = System.getProperty('logFilePath', "/tmp/logs")
+    def logsDir = System.getProperty('logFilePath', "$projectDir/tmp/logs")
     File logsFolder = new File(logsDir)
     if (!logsFolder.exists()) {
         logsFolder.mkdirs()
@@ -86,7 +162,10 @@ bootRun {
             "-Dapp.config=$appConfig",
             "-Dserver.port=$serverPort",
             "-Dlogback.appender=$logbackAppender",
-            "-Dwebapp.baseUrl=http://localhost:$serverPort/",
+            "-Dhttp.proxyHost=http://localhost/",
+            "-Dhttps.proxyHost=http://localhost/",
+            "-Dhttp.proxyPort=8080",
+            "-Dhttps.proxyPort=8080",
             "-Djavax.net.ssl.trustStore=$projectDir/security/api_truststore.jks",
             "-Djavax.net.ssl.keyStore=$projectDir/security/api_keystore.jks",
             "-Djavax.net.ssl.trustStorePassword=$keyStorePw",
@@ -127,20 +206,25 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    //testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-engine'
+    }
 
-    // Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
-    //testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
-    //testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    //testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+
+    // Additional dependencies to run Junit5 Tests in Intellij IDE
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.6.0"
+    testRuntimeOnly 'org.junit.platform:junit-platform-engine:1.6.0'
 }
 
 processResources {
     filter ReplaceTokens, tokens: [
-            "application.version": version.toString(),
+            "application.version"       : version.toString(),
             "application.buildTimestamp": getDate(),
-            "application.branch": branch.toString(),
+            "application.branch"        : branch.toString(),
     ]
 }
 
@@ -161,14 +245,15 @@ jacocoTestReport {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "$rootPack/aop/*",
-                    "$rootPack/constants/*"
+                    "$rootPack/constants/*",
+                    "$rootPack/utils/PatternMaskingLayout.class"
             ])
         })
     }
 }
 
 dependencyCheck {
-	format = 'ALL'
+    format = 'ALL'
 }
 
 sonarqube {
@@ -184,10 +269,40 @@ sonarqube {
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.verbose', true
         property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.sources', "src"
+        property 'sonar.exclusions', "**/test/**, **/lib/**, **/resources/**"
         property 'sonar.dependencyCheck.skip', true
         property 'sonar.dependencyCheck.xmlReportPath', 'build/reports/dependency-check-report.xml'
         property 'sonar.dependencyCheck.htmlReportPath', 'build/reports/dependency-check-report.html'
-        properties["sonar.sources"] += "build.gradle"
+    }
+}
+
+task incrementVersion {
+    try {
+        if (System.getProperty("isRelease", "N").equalsIgnoreCase("Y")) {
+            Properties props = new Properties()
+            File file = new File("gradle.properties")
+            props.load(file.newDataInputStream())
+            Integer nextBuildNum = (((props.getProperty('artifactBuildNumber')) as BigDecimal) + 1)
+            props.setProperty('artifactBuildNumber', nextBuildNum.toString())
+            props.store(file.newWriter(), null)
+            props.load(file.newDataInputStream())
+        }
+    } catch (Exception e) {
+        println "Error occurred while incrementing the version ${e.getMessage()}"
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: "${artifactory_url}/libs-snapshot-local") {
+                authentication(userName: artifactory_user, password: artifactory_password)
+            }
+            repository(url: "${artifactory_url}/libs-release-local") {
+                authentication(userName: artifactory_user, password: artifactory_password)
+            }
+        }
     }
 }
 
@@ -195,5 +310,5 @@ tasks['sonarqube'].dependsOn(test)
 tasks['test'].finalizedBy(jacocoTestReport)
 
 static String getDate() {
-    return ZonedDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+    return ZonedDateTime.now().format("MM-dd-yyyy HH:mm:ss")
 }

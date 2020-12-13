@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories("com.poc.bem.demo.repositories")
-@EntityScan("com.poc.dem.demo.domain")
+@EntityScan("com.poc.bem.demo.domain")
 @EnableTransactionManagement
 @NoArgsConstructor
 public class RepositoryConfig {
