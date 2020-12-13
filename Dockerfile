@@ -4,7 +4,7 @@ EXPOSE 8082
 
 ARG HOME=/app
 
-ENV SERVER_PORT=8082
+ENV SERVER_PORT=8081
 ENV logFilePath=${HOME}/tmp/logs
 ENV ENV=default
 
