@@ -1,10 +1,10 @@
 FROM openjdk:11
 MAINTAINER 'Bel Sahn'
-EXPOSE 8081
+EXPOSE 8080
 
 ARG HOME=/app
 
-ENV SERVER_PORT=8081
+ENV SERVER_PORT=8080
 ENV logFilePath=${HOME}/tmp/logs
 ENV ENV=default
 
