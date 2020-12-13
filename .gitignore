@@ -10,7 +10,6 @@ tmp/
 
 ### Gradle ###
 .gradle/
-gradle/
 /target/
 gradlew
 gradlew.bat
