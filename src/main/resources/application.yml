@@ -1,7 +1,7 @@
 spring:
   application:
     name: spring-sql-gradle-producer
-    description: A demo project for a RESTful Service connected to a SQL DB.
+    description: A proof-of-concept Spring Data REST & JPA project
     version: "@application.version@"
     timestamp: "@application.buildTimestamp@"
     branch: "@application.branch@"
