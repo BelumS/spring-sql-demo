@@ -242,6 +242,16 @@ processResources {
     ]
 }
 
+/*task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}*/
+
 test {
     useJUnitPlatform()
 
@@ -341,9 +351,12 @@ artifactory {
             maven = true
             mavenCompatible = true
         }
-        defaults {
+/*        defaults {
             publications('mavenJava')
-        }
+            publishBuildInfo = true
+            publishArtifacts = true
+            publishPom = true
+        }*/
     }
 /*    resolve {
         repository {
@@ -360,7 +373,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             //from components.java
-            //artifact(file("build/libs/${project.name}-{$version}.war"))
+            //artifact sourceJar
+            //artifact javadocJar
             artifact(file("build/libs/${project.getName()}-{$version}.jar"))
         }
     }
