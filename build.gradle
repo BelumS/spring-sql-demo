@@ -351,12 +351,12 @@ artifactory {
             maven = true
             mavenCompatible = true
         }
-/*        defaults {
+        defaults {
             publications('mavenJava')
             publishBuildInfo = true
             publishArtifacts = true
             publishPom = true
-        }*/
+        }
     }
 /*    resolve {
         repository {
