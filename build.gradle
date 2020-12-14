@@ -18,7 +18,7 @@ buildscript {
     repositories {
         mavenLocal()
         maven {
-            url "${artifactory_url}/libs-release-local"
+            url "${artifactory_url}/gradle-release"
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -27,6 +27,14 @@ buildscript {
 
         maven {
             url "${artifactory_url}/libs-release"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/libs-release-local"
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -43,17 +51,6 @@ buildscript {
 
         jcenter { url "http://jcenter.bintray.com" }
         maven { url "http://repo.spring.io/milestone" }
-        //mavenCentral()
-        //mavenLocal()
-        //jcenter()
-
-/*        maven {
-            url "${artifactory_url}/libs-release-local"
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }*/
     }
 
     dependencies {
@@ -78,7 +75,7 @@ plugins {
 
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
-apply plugin: 'war'
+//apply plugin: 'war'
 
 idea {
     module {
@@ -118,8 +115,13 @@ configurations {
 repositories {
     //mavenCentral()
     mavenLocal()
-    //mavenLocal()
-    //jcenter()
+    maven {
+        url "${artifactory_url}/gradle-release"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
 
     maven {
         url "${artifactory_url}/libs-release"
@@ -204,7 +206,6 @@ dependencies {
     implementation "ch.qos.logback:logback-access:$logbackVersion"
 
     implementation 'org.apache.commons:commons-lang3:3.9'
-    //implementation 'com.auth0:java-jwt:3.8.1'
     implementation "io.springfox:springfox-swagger2:$swaggerVersion"
     implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
 
@@ -324,8 +325,8 @@ uploadArchives {
 */
 
 artifactory {
-    contextUrl = "${artifactory_url}"
     publish {
+        contextUrl = "${artifactory_url}"
         repository {
             if (version.toString().contains("SNAPSHOT")) {
                 println "version is $version"
@@ -339,28 +340,23 @@ artifactory {
             maven = true
             mavenCompatible = true
         }
-        defaults {
-            publications('mavenJava')
-        }
-        publishBuildInfo = true
-        publishArtifacts = true
-        publishPom = true
     }
-    resolve {
+/*    resolve {
         repository {
             repoKey = 'libs-release'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
         }
-    }
+    }*/
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             //from components.java
-            artifact(file("build/libs/${project.name}-{$version}.war"))
+            //artifact(file("build/libs/${project.name}-{$version}.war"))
+            artifact(file("build/libs/${project.name}-{$version}.jar"))
         }
     }
 }
