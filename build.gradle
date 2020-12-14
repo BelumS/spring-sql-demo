@@ -340,6 +340,9 @@ artifactory {
             maven = true
             mavenCompatible = true
         }
+        defaults {
+            publications('mavenJava')
+        }
     }
 /*    resolve {
         repository {
@@ -347,6 +350,7 @@ artifactory {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
+            mavenCompatible = true
         }
     }*/
 }
@@ -356,7 +360,7 @@ publishing {
         mavenJava(MavenPublication) {
             //from components.java
             //artifact(file("build/libs/${project.name}-{$version}.war"))
-            artifact(file("build/libs/${project.name}-{$version}.jar"))
+            artifact(file("build/libs/${project.getName()}-{$version}.jar"))
         }
     }
 }
