@@ -360,7 +360,7 @@ publishing {
         mavenJava(MavenPublication) {
             //from components.java
             //artifact(file("build/libs/${project.name}-{$version}.war"))
-            artifact(file("build/libs/${project.getName()}-{$version}.jar"))
+            artifact(file("build/libs/${project.name}-{$version}.jar"))
         }
     }
 }
