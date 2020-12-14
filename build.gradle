@@ -17,7 +17,7 @@ buildscript {
 
     repositories {
         maven {
-            url "${artifactory_url}/gradle-dev"
+            url "${artifactory_url}/libs-release-local"
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -275,7 +275,8 @@ task incrementVersion {
     }
 }
 
-/*uploadArchives {
+/*
+uploadArchives {
     repositories {
         mavenDeployer {
             snapshotRepository(url: "${artifactory_url}/libs-snapshot-local") {
@@ -286,12 +287,14 @@ task incrementVersion {
             }
         }
     }
-}*/
+}
+*/
+
 artifactory {
     contextUrl = "${artifactory_url}"
     publish {
         repository {
-            repoKey = 'gradle-dev-local'
+            repoKey = 'libs-snapshot-local'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -305,7 +308,7 @@ artifactory {
     }
     resolve {
         repository {
-            repoKey = 'gradle-dev'
+            repoKey = 'libs-release-local'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
