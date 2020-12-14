@@ -16,6 +16,7 @@ buildscript {
     }
 
     repositories {
+        mavenLocal()
         maven {
             url "${artifactory_url}/libs-release-local"
             credentials {
@@ -23,7 +24,26 @@ buildscript {
                 password = "${artifactory_password}"
             }
         }
-        mavenCentral()
+
+        maven {
+            url "${artifactory_url}/libs-release"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        maven {
+            url "${artifactory_url}/gradle-example-cache"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+        jcenter { url "http://jcenter.bintray.com" }
+        maven { url "http://repo.spring.io/milestone" }
+        //mavenCentral()
         //mavenLocal()
         //jcenter()
 
@@ -34,9 +54,6 @@ buildscript {
                 password = "${artifactory_password}"
             }
         }*/
-
-/*        jcenter{url "http://jcenter.bintray.com"}
-        maven{ url "http://repo.spring.io/milestone"}*/
     }
 
     dependencies {
@@ -99,21 +116,37 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
+    //mavenCentral()
     mavenLocal()
     //mavenLocal()
     //jcenter()
 
-/*    maven {
+    maven {
+        url "${artifactory_url}/libs-release"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    maven {
         url "${artifactory_url}/libs-release-local"
         credentials {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
         }
-    }*/
+    }
 
-/*        jcenter{url "http://jcenter.bintray.com"}
-        maven{ url "http://repo.spring.io/milestone"}*/
+    maven {
+        url "${artifactory_url}/gradle-example-cache"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    jcenter { url "http://jcenter.bintray.com" }
+    maven { url "http://repo.spring.io/milestone" }
 }
 
 bootRun {
@@ -294,10 +327,17 @@ artifactory {
     contextUrl = "${artifactory_url}"
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            if (version.toString().contains("SNAPSHOT")) {
+                println "version is $version"
+                repoKey = 'libs-snapshot-local'
+            } else {
+                println "version is $version"
+                repoKey = 'libs-release-local'
+            }
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
+            mavenCompatible = true
         }
         defaults {
             publications('mavenJava')
@@ -308,7 +348,7 @@ artifactory {
     }
     resolve {
         repository {
-            repoKey = 'libs-release-local'
+            repoKey = 'libs-release'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -319,7 +359,8 @@ artifactory {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            //from components.java
+            artifact(file("build/libs/${project.name}-{$version}.war"))
         }
     }
 }
