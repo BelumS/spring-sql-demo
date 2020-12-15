@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "belum/spring-sql-gradle-producer"
-        registryCredential = 'belum'
+        registryCredential = 'DH'
         dockerImage = ''
     }
     agent any
