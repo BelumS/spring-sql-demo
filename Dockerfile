@@ -12,4 +12,4 @@ WORKDIR ${HOME}
 COPY . ${HOME}
 
 RUN ./gradlew clean build -x test --refresh-dependencies
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar","/app/build/libs/spring-sql-gradle-producer-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-war","/app/build/libs/spring-sql-gradle-producer-0.0.1-SNAPSHOT.war"]
