@@ -33,7 +33,7 @@ plugins {
 
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'war'
+//apply plugin: 'war'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -77,6 +77,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     maven {
         url "${artifactory_url}/jcenter"
         credentials {
