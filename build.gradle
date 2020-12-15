@@ -93,7 +93,7 @@ bootRun {
     String keyStorePw = System.getenv('KEYSTORE_PW')
     def appConfig = System.getProperty('app.config', "$projectDir/tmp/config")
 
-    def logsDir = System.getProperty('logFilePath', "$projectDir/tmp/logs")
+    def logsDir = System.getProperty('logFilePath', "$projectDir/logs")
     File logsFolder = new File(logsDir)
     if (!logsFolder.exists()) {
         logsFolder.mkdirs()
