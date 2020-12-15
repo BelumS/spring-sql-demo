@@ -27,10 +27,10 @@ api:
     v2: "v2"
 
 server:
-  port: 8080
+  port: ${SERVER_PORT}
   servlet:
     contextPath: "/${spring.application.name}"
 
 logback:
-  #appender: STDOUT_COLOR
+  appender: ${LOGBACK_APPENDER}
   level: DEBUG
