@@ -9,13 +9,13 @@
     <property name="maxHistory" value="${logback.maxHistory:-3}"/>
     <property name="totalSizeCap" value="${logback.totalSizeCap:-300MB}"/>
     <property name="logLevel" value="${logback.logLevel:-DEBUG}"/>
-    <property name="appender" value="${logback.appender:-Async-Appender}"/>
+    <property name="appender" value="${logback.appender:-STDOUT}"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logFilePath}/spring-sql-demo.log</file>
+        <file>${logFilePath}/spring-sql-gradle-producer.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>${logFilePath}/spring-sql-demo-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${logFilePath}/spring-sql-gradle-producer-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>25MB</maxFileSize>
             <maxHistory>3</maxHistory>
             <totalSizeCap>300MB</totalSizeCap>
@@ -58,7 +58,7 @@
         </encoder>
     </appender>-->
 
-    <appender name="Async-Appender" class="ch.qos.logback.classic.AsyncAppender">
+    <appender name="ASYNC_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE"/>
         <queueSize>512</queueSize>
         <discardingThreshold>0</discardingThreshold>
