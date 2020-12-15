@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        registry = "belum/spring-sql-gradle-producer:latest"
+        registry = "belum/spring-sql-gradle-producer"
         registryCredential = 'belum'
         dockerImage = ''
     }
