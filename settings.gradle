@@ -1,6 +1,6 @@
 rootProject.name = 'spring-sql-gradle-producer'
 
-include "shared", "api", "services:webservice"
+/*include "shared", "api", "services:webservice"
 
 ext.isPush = getProperty('gradle.cache.push')
 
@@ -16,4 +16,4 @@ buildCache {
         }
         push = isPush
     }
-}
+}*/

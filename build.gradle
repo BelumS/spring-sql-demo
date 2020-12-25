@@ -16,7 +16,8 @@ buildscript {
     }
 
     repositories {
-        jcenter()
+        //jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -76,14 +77,15 @@ configurations {
 }
 
 repositories {
-    mavenLocal()
-    maven {
+    //mavenLocal()
+    mavenCentral()
+/*    maven {
         url "${artifactory_url}/jcenter"
         credentials {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
         }
-    }
+    }*/
 }
 
 bootRun {
@@ -114,8 +116,8 @@ bootRun {
             "-Dlogback.appender=$logbackAppender",
             "-Dhttp.proxyHost=http://localhost/",
             "-Dhttps.proxyHost=http://localhost/",
-            "-Dhttp.proxyPort=8080",
-            "-Dhttps.proxyPort=8080",
+            "-Dhttp.proxyPort=$serverPort",
+            "-Dhttps.proxyPort=$serverPort",
             "-Djavax.net.ssl.trustStore=$projectDir/security/api_truststore.jks",
             "-Djavax.net.ssl.keyStore=$projectDir/security/api_keystore.jks",
             "-Djavax.net.ssl.trustStorePassword=$keyStorePw",
@@ -220,7 +222,7 @@ task incrementVersion {
     }
 }
 
-uploadArchives {
+/*uploadArchives {
     repositories {
         mavenDeployer {
             snapshotRepository(url: "${artifactory_url}/libs-snapshot-local") {
@@ -231,7 +233,7 @@ uploadArchives {
             }
         }
     }
-}
+}*/
 
 tasks['test'].finalizedBy(jacocoTestReport)
 

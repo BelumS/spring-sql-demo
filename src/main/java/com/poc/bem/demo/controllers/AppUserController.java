@@ -9,13 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("${api.basePath}/${api.version.v1}/user")
+@RequestMapping("${api.basePath}/${api.version.v1}/users")
 @RequiredArgsConstructor
 @Slf4j
 public class AppUserController {
@@ -42,7 +43,7 @@ public class AppUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create User", notes = "Creates a new User")
-    public AppUserDTO createUser(@RequestBody AppUserDTO user) {
+    public AppUserDTO createUser(@RequestBody @NonNull AppUserDTO user) {
         final AppUser saved = service.create(new AppUser(user));
         log.debug("Inserting a new User{}", saved);
         return user;
@@ -50,7 +51,7 @@ public class AppUserController {
 
     @PutMapping
     @ApiOperation(value = "Update User", notes = "Updates an existing User")
-    public AppUserDTO updateUser(@RequestBody AppUserDTO user) {
+    public AppUserDTO updateUser(@RequestBody @NonNull AppUserDTO user) {
         final AppUser updated = service.update(new AppUser(user));
         log.debug("Updating User #{}", updated.getId());
         return user;
